@@ -1,0 +1,5 @@
+Suitable GLEW prebuilt.
+Used as submodule when building glhck.
+
+TODO:
+Built more light glew using the custom.txt
