@@ -109,7 +109,8 @@
 #if defined(GLEW_USE_LIB_ES20)
 #define GLEW_OPENGLES_LIB_PATH  "/usr/lib/libGLESv2.so"
 #elif defined(GLEW_USE_LIB_ES11)
-#define GLEW_OPENGLES_LIB_PATH  "/usr/lib/libGLESv1_CM.so"
+#define GLEW_OPENGLES_LIB_PATH   "/usr/lib/libGLESv1_CM.so"
+#define GLEW_OPENGLES_LIB_PATH_2 "/usr/lib/libGLES_CM.so"
 #endif
 
 #if defined GLEW_INC_EGL
@@ -139,6 +140,10 @@ void* esGetProcAddress (const GLubyte *name)
     if (NULL == imageGLES)
     {
       imageGLES = dlopen(GLEW_OPENGLES_LIB_PATH, RTLD_LAZY);
+    }
+    if (NULL == imageGLES)
+    {
+      imageGLES = dlopen(GLEW_OPENGLES_LIB_PATH_2, RTLD_LAZY);
     }
     if( !imageGLES ) return NULL;
     void* addr = dlsym(imageGLES, (const char*)name);
