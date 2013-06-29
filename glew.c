@@ -34,6 +34,7 @@
 #  if defined(GLEW_INC_EGL)
 #    include <GL/eglew.h>
 #  endif
+#  include <string.h>
 #elif defined(_WIN32)
 #  include <GL/wglew.h>
 #elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX)
@@ -148,6 +149,13 @@ void* esGetProcAddress (const GLubyte *name)
     if( !imageGLES ) return NULL;
     void* addr = dlsym(imageGLES, (const char*)name);
     if( addr ) return addr;
+
+    // PANDORA SGX HACK!
+    // Calling stuff that is not implemented explodes everything!
+    if (strstr(name, "buffer") || strstr(name, "Buffer")) {
+       addr = eglGetProcAddress((const char*)name);
+       if( addr ) return addr;
+    }
     return NULL;
   }
   return NULL;
