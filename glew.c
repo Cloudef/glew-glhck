@@ -251,7 +251,14 @@ void* NSGLGetProcAddress (const GLubyte *name)
 #if defined(GLEW_USE_LIB_ES)
 #  define glewGetProcAddress(name) esGetProcAddress(name)
 #elif defined(_WIN32)
-#  define glewGetProcAddress(name) wglGetProcAddress((LPCSTR)name)
+static void* winGetProcAddress(LPCSTR name) {
+  void *proc = wglGetProcAddress(name);
+  if (proc) return proc;
+  static HMODULE module = NULL;
+  if (!module) module = LoadLibrary((LPCSTR)"opengl32.dll");
+  return GetProcAddress(module, name);
+}
+#  define glewGetProcAddress(name) winGetProcAddress((LPCSTR)name)
 #else
 #  if defined(__APPLE__)
 #    define glewGetProcAddress(name) NSGLGetProcAddress(name)
